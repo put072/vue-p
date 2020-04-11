@@ -3195,7 +3195,8 @@ export default new Vuex.Store({
     ],
     provinceSelected:[],
     input:"",
-    lastMem:[]
+    lastMem:[],
+    zeroSelected: {}
   },
   mutations: {
     SET_PROVINCE_SELECTED(state, payload){
@@ -3206,6 +3207,9 @@ export default new Vuex.Store({
     },
     SET_LASTMEM_SELECTED(state, payload){
       state.lastMem = payload
+    },
+    SET_ZERO_SELECTED(state, payload) {
+      state.zeroSelected = payload
     }
   },
   actions: {
@@ -3217,7 +3221,11 @@ export default new Vuex.Store({
     setLastMemBySelected({commit}, {input, selected}){
       commit('SET_INPUT_SELECTED', input)
       commit('SET_LASTMEM_SELECTED', selected)
-    }
+    },
+    getZero ({ state, commit }, id) {
+      let zerof =  state.addresses.find(zero => zero.id === parseInt(id))
+      commit('SET_ZERO_SELECTED', zerof)
+    },
   },
   getters: {
     getAddress(state){
@@ -3233,13 +3241,16 @@ export default new Vuex.Store({
       return state.input
     },
     getName(state){
-      return state.lastMem.holderName.split(" ").slice(0,1).join(' ')
+      return state.zeroSelected.holderName.split(" ").slice(0,1).join(' ')
     },
     getLastName(state){
-      return state.lastMem.holderName.split(" ").slice(1).join(' ')
+      return state.zeroSelected.holderName.split(" ").slice(1).join(' ')
     },
     getLastMem(state){
-      return state.lastMem
+      return state.input
+    },
+    getZeroByQueryId (state) {
+      return state.zeroSelected
     }
   }
 })

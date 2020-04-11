@@ -17,7 +17,7 @@
       <option value="">กรุณาเลือกจังหวัด</option>
       <option v-for="province in provinces " :key="province" :value="province">{{province}}</option>
     </select>
-    <button @click="submit">submit</button>
+    <!-- <button @click="submit">submit</button> -->
     
     <!-- <button @click="$emit('lastMem', rederName('พระ',lastMem))">select</button> -->
 
@@ -33,6 +33,7 @@
         <td>{{i+1}}</td>
         <td>{{el.addressName}}</td>
         <td>{{rederName("พระ",el.holderName)}}</td>
+        <button @click="clickedSendId(el.id)">Select</button>
       </tr>
     </table>
   </div>
@@ -51,6 +52,15 @@ export default {
       }
     },
     methods: {
+      clickedSelected (selected) {
+        let zeroSelected =  selected
+
+        this.$store.dispatch('setLastMemBySelected', { input: this.msg,  selected: zeroSelected })
+        this.$router.push('/result')
+      },
+      clickedSendId (id) {
+        this.$router.push({ path: `/result/${id}`, query: { name: this.msg } })
+      },
       // reverseMessage: function () {
         //   return  this.message = this.message.split('').reverse().join('')
         // },
@@ -69,7 +79,7 @@ export default {
         // this.$store.dispatch('setProvinceBySelected', this.selected)
         if(this.selected){
           this.$store.dispatch('setLastMemBySelected', {input: this.msg,  selected: this.lastMem})
-          this.$router.push("/result")
+          this.$router.push("/result") // change localhost:8080 /(Home <--Helloworld) --> /result
         }else{
           alert("กรุณากรอกเลือกจังหวัด")
         }
