@@ -1,0 +1,114 @@
+<template>
+  <div id="app">
+    <div id="nav">
+      <router-link to="/">Home</router-link> |
+      <router-link to="/about">About</router-link> |
+      <router-link to="/learning">Learn</router-link>
+    </div>
+
+    <h1>ค้นหาศูนย์ </h1>
+    <!-- <p> ชื่อ:{{message}}</p> -->
+    <input v-model="fullname" placeholder="Your name"> 
+    <input v-model="name" placeholder="Your firstname"> 
+    <input v-model="lastname" placeholder="Your lastname"> 
+
+    <div class="edit">
+      <p>จังหวัด:{{select}}</p>
+      <select v-model="select">
+        <option value="">เลือกจังหวัด</option>
+        <option v-for="(add,i) in adds" :key="i" :value="add">{{add}}</option> <!-- add คือ element keyคือตัวนับลูป valueคือค่าที่ลูป --> 
+      </select>
+      <button @click="isShow=!isShow">Sumit</button>     
+      <!-- <button @click="$emit('lastMem',renderName(lastMem))">select</button> -->
+    </div>
+
+    <table v-if="isShow">  
+      <tr>
+        <th>ลำดับ</th>
+        <th>ชื่อศูนย์</th>
+        <th>ชื่อหัวหน้าศูนย์</th>
+      </tr>
+      <tr v-for="(x,y) in fil" :key="y">
+        <td>{{y+1}}</td>
+        <td>{{x.addressName}}</td>
+        <td>{{renderName(x.holderName)}}</td>
+      </tr>
+    </table>
+    <router-view/>
+  </div>
+</template>
+
+<script>
+export default {
+  date() {
+    return {
+      name:"",
+      surname:"",
+      isShow:false,
+      select:"",
+      msg:'',
+    }
+  },
+  watch: {
+
+  },
+  created: {
+
+  },
+  mounted: {
+
+  }, 
+  destroyed: {
+
+  },
+  methods: {
+    renderName (i) {
+      return ` พระ${this.message} ${i.split(" ").slice(1).join(' ')}`
+    }
+  },
+  computed: {
+    adds(){
+      return Array.from(new Set(this.address.map(x=>x.addressLv2)))
+    },
+    fil(){
+      return this.address.filter(add=>add.addressLv2 === this.select) //ตัวแปรของค่าที่ถูกเลือกในแท็กselect
+    },
+    lastMem(){
+      return this.fil[this.fil.lenght - 1].holderName;
+    },
+    fullname: {
+      get() {
+        return `${this.name} ${this.lastname}`
+      },
+      set(val) {
+        let splitfullname = val.split(" ")
+        this.name = splitfullname[0]
+        this.lastname = splitfullname[splitfullname.lenght - 1]
+      }
+    }
+  }
+}
+</script>
+
+<style>
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+
+#nav {
+  padding: 30px;
+}
+
+#nav a {
+  font-weight: bold;
+  color: #2c3e50;
+}
+
+#nav a.router-link-exact-active {
+  color: #42b983;
+}
+</style>
