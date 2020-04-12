@@ -5,8 +5,8 @@
     <!-- <h2>{{lastMember}}</h2> -->
 
     <p>ชื่อของคุณ: {{msgHome}}</p>
-    <input v-model="msgHome" placeholder="ชื่อจริง">
-    <HelloWorld @lastMem="lastMem" :msg="msgHome"/>
+    <Input v-model="msgHome" style="width: 200px" placeholder="ชื่อจริง" />
+    <HelloWorld :msg="msgHome" />
   </div>
 </template>
 

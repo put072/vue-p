@@ -13,33 +13,39 @@
 
     <!-- work2 -->
     <p>จังหวัด :{{selected}}</p>
-    <select v-model="selected" >
-      <option value="">กรุณาเลือกจังหวัด</option>
-      <option v-for="province in provinces " :key="province" :value="province">{{province}}</option>
-    </select>
+    <AutoComplete
+      v-model="selected"
+      icon="ios-search"
+      :data="provinces"
+      placeholder="input here"
+      style="width:200px"
+    >
+    </AutoComplete>
     <!-- <button @click="submit">submit</button> -->
     
     <!-- <button @click="$emit('lastMem', rederName('พระ',lastMem))">select</button> -->
 
     <br>
     <br>
-    <table v-if="isShow">
-      <tr>
-        <th>ลำดับ</th>
-        <th>ศูนย์</th>
-        <th>หัวหน้าศูนย์</th>
-      </tr>
-      <tr v-for="(el, i) in selectedP" :key="i"> 
-        <td>{{i+1}}</td>
-        <td>{{el.addressName}}</td>
-        <td>{{rederName("พระ",el.holderName)}}</td>
-        <button @click="clickedSendId(el.id)">Select</button>
-      </tr>
-    </table>
+    <Row v-if="isShow" style="padding:20px">
+      <i-col v-for="(el, i) in selectedP" :key="i" span="8" style="padding:20px">
+        <Card :bordered="false" style="text-align: left;">
+          <p slot="title">{{i+1}}. {{el.addressName}}</p>
+          <p>หัวหน้าศูนย์: {{rederName("พระ",el.holderName)}}</p>
+          <p>Tel: {{el.telephone}}</p>
+          <p>จังหวัด: {{el.addressLv2}}</p>
+          <br>
+          <Button ghost type="info" @click="clickedSendId(el.id)">เลือก</Button>
+        </Card>
+      </i-col>
+    </Row>
   </div>
 </template>
 
 <script>
+import Vue from 'vue'
+import { AutoComplete } from 'view-design';
+Vue.component('AutoComplete', AutoComplete);
 export default {
   name: 'HelloWorld',
   props: {
@@ -48,7 +54,7 @@ export default {
    data() {
       return {
         isShow: true,
-        selected: ""
+        selected: "",
       }
     },
     methods: {
@@ -78,11 +84,14 @@ export default {
         // this.isShow = !this.isShow 
         // this.$store.dispatch('setProvinceBySelected', this.selected)
         if(this.selected){
-          this.$store.dispatch('setLastMemBySelected', {input: this.msg,  selected: this.lastMem})
+          // this.$store.dispatch('setLastMemBySelected', {input: this.msg,  selected: this.lastMem})
           this.$router.push("/result") // change localhost:8080 /(Home <--Helloworld) --> /result
         }else{
           alert("กรุณากรอกเลือกจังหวัด")
         }
+      },
+      filterMethod (value, option) {
+        return option.toUpperCase().indexOf(value.toUpperCase()) !== -1;
       }
     },
     computed:{
@@ -95,8 +104,8 @@ export default {
       selectedP(){
         return this.addresses.filter(address => address.addressLv2 === this.selected)
       },
-      lastMem() {
-        return this.selectedP[this.selectedP.length - 1];
+      lastMem () {
+        return ''
       }
     }
 }
