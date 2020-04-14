@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import api from '@/plugins/axios'
 
 Vue.use(Vuex)
 
@@ -3196,7 +3197,9 @@ export default new Vuex.Store({
     provinceSelected:[],
     input:"",
     lastMem:[],
-    zeroSelected: {}
+    zeroSelected: {},
+    totalsItems: 0,
+    items: []
   },
   mutations: {
     SET_PROVINCE_SELECTED(state, payload){
@@ -3210,6 +3213,12 @@ export default new Vuex.Store({
     },
     SET_ZERO_SELECTED(state, payload) {
       state.zeroSelected = payload
+    },
+    SET_ITEMS(state, payload) {
+      state.items = payload
+    },
+    SET_TOTALS(state, payload) {
+      state.totalsItems = payload
     }
   },
   actions: {
@@ -3226,6 +3235,16 @@ export default new Vuex.Store({
       let zerof =  state.addresses.find(zero => zero.id === parseInt(id))
       commit('SET_ZERO_SELECTED', zerof)
     },
+    getBooksFromApi ({ commit }) {
+      api.getData(`?path=/books&limit=50`)
+        .then(res => {
+          let data = res.data
+          commit('SET_TOTALS', data.nitems)
+          commit('SET_ITEMS', data.items)
+        })
+        .catch(err => console.log(err))
+
+    }
   },
   getters: {
     getAddress(state){
@@ -3251,6 +3270,12 @@ export default new Vuex.Store({
     },
     getZeroByQueryId (state) {
       return state.zeroSelected
+    },
+    getBooks (state) {
+      return state.items
+    },
+    getTotals (state) {
+      return state.totalsItems
     }
   }
 })
